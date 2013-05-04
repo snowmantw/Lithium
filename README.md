@@ -5,6 +5,26 @@ Trying to find a best way to implement auto-complete feature.
 
 Requirements: [Vanilla JS](http://vanilla-js.com/)
 
+Principles:
+
+1. Memory consumption and efficiency
+2. Unit-testable and reusable
+
+Features according to principle #1
+
+* Create buffer before append DOMs, although it may be a common sense now.
+* Prefer browser's native features like `forEach` and `querySelectorsAll`,
+instead of implementing this same features in JavaScript.
+
+* Data structures, caches, algorithms.
+
+Features according to principle #2:
+
+* Isolate impure and pure computations via simple contexts.
+But this may conflicts with principle #1.
+
+* Utility functions include some high-order functions.
+* Simple test module and functions. 
 
 ---
 
