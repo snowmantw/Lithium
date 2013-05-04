@@ -119,10 +119,61 @@ window.Tests.Context =
                 {
                     return a+4
                 })
-            .done()
+            .done()()
 
             _.assert(_.eq(result, assert), "Context.lambda testing")
-        })()
+        })();
+    }
+
+    ,testBind: function()
+    {
+        (function()
+        {
+            var assert = 11
+
+            var AddTo5 = Context(0)
+                ._(function(a)
+                {
+                    return a+3
+                })
+                ._(function(a)
+                {
+                    return a+2
+                })
+            .done()
+
+            var AddTo11 = Context(0)
+                .bind(function(r){ return AddTo5 })
+                ._(function(five){ return five + 6})
+            .done()
+
+            var result = AddTo11()
+            _.assert(_.eq(result, assert), "Context.bind testing")
+        })();
+
+        (function()
+        {
+            var assert = 11
+
+            var AddTo5 = Context(0)
+                ._(function(a)
+                {
+                    return a+3
+                })
+                ._(function(a)
+                {
+                    return a+2
+                })
+            .idgen()
+
+            var AddTo11 = Context(0)
+                .bind(AddTo5)
+                ._(function(five){ return five + 6})
+            .done()
+
+            var result = AddTo11()
+            _.assert(_.eq(result, assert), "Context.bind testing # idgen")
+        })();
     }
 }
     
