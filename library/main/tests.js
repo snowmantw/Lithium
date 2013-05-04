@@ -48,6 +48,19 @@ window.Tests =
             console.log("Assertion successed at: "+subject)
         }
     }
+
+    ,testAll: function()
+    {
+        var suites = [Tests.Utils, Tests.Context, Tests.UI]
+    
+        Utils.each(suites, function(s)
+        {
+            for( var tname in s )
+            {
+                s[tname]()
+            }
+        })
+    }
 }
 
 // For convenience in this scope...
@@ -174,6 +187,34 @@ window.Tests.Context =
             var result = AddTo11()
             _.assert(_.eq(result, assert), "Context.bind testing # idgen")
         })();
+    } // End of Context.bind
+} // End of Tests.Context
+
+window.Tests.UI =
+{
+     testExtending: function()
+    {
+        // Should own all features of basic Context.
+        var assert = 11
+
+        var AddTo5 = UI(0)
+            ._(function(a)
+            {
+                return a+3
+            })
+            ._(function(a)
+            {
+                return a+2
+            })
+        .idgen()
+
+        var AddTo11 = UI(0)
+            .bind(AddTo5)
+            ._(function(five){ return five + 6})
+        .done()
+
+        var result = AddTo11()
+        _.assert(_.eq(result, assert), "UI testing # extending")
     }
 }
     
