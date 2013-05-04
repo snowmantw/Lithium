@@ -97,7 +97,18 @@ window.Context.o.prototype =
 
         // Run the context and extract it if needed.
         // Wrapper for bind the "this".
-        return function(cfn){ return _this.run(cfn) }
+        var rt = function(cfn){ return _this.run(cfn) }
+
+        // Magic here to let this come true:
+        //
+        //      var c1 = Context(10).act().done()
+        //      var c2 = c1.bind(Context(20).act().idgen()) 
+        //
+        // Very useful when we need to concat another chain in fold/reduce.
+        //
+        rt.bind = this.bind
+
+        return rt
     }
 
     // A hidden function. Usually return by `done`.
@@ -108,7 +119,9 @@ window.Context.o.prototype =
         {
             this.__cfn = cfn
         }
-        return this.__process[0].call(this)
+        var result = this.__process[0].call(this)
+        this.__process.length = 0
+        return result
     }
 
     // For convenience: bound context can use this instead of anonymous generator functions.
