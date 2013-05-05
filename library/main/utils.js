@@ -58,6 +58,17 @@ window.Utils =
         }
         return to
     }
+
+    // Object -> [String]
+    ,keys: function(obj)
+    {
+        var r = []
+        for( var i in obj )
+        {
+            r.push(i)
+        }
+        return r
+    }
 }
 
 })()
