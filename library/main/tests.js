@@ -51,7 +51,7 @@ window.Tests =
 
     ,testAll: function()
     {
-        var suites = [Tests.Utils, Tests.Context, Tests.UI]
+        var suites = [Tests.Utils, Tests.Context, Tests.UI, Tests.Trie]
     
         Utils.each(suites, function(s)
         {
@@ -215,6 +215,20 @@ window.Tests.UI =
 
         var result = AddTo11()
         _.assert(_.eq(result, assert), "UI testing # extending")
+    }
+}
+
+window.Tests.Trie = 
+{
+     testInitialize: function()
+    {
+        var kvs = {'a': 'id-a', 'z': 'id-z', 'abcdefg': 'id-abcdefg', 'zab': 'id-zab', 'zac': 'id-zac'}
+        var t = new Trie(kvs)
+        var itr = 0
+        for(var k in kvs)
+        {
+            _.assert(_.eq(kvs[k],t.query(k)[""]), "Trie testing # initialize ("+(++itr)+")")
+        } 
     }
 }
     
