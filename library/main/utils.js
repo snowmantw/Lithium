@@ -41,12 +41,22 @@ window.Utils =
     // fn: x -> mem -> x'
     ,fold: function(xs, mem, fn)
     {
-        // Implementation with slight side-effects.
-        Utils.map(xs, function(x)
+        if( xs.reduce )
         {
-            mem = fn(mem, x)
-        })
-        return mem
+            return xs.reduce(function(pre, e, i, a)
+            {
+                return fn(e,pre)
+            })
+        }
+        else
+        {
+            // Implementation with slight side-effects.
+            Utils.map(xs, function(x)
+            {
+                mem = fn(mem, x)
+            })
+            return mem
+        }
     }
 
     // Copy one object.
