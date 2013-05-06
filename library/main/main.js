@@ -8,15 +8,22 @@ window.Session =
 }
 
     // :: [String] -> Trie
-    var initTrie = function(list)
+    var initUITrie = function(list)
     {
         var id = 0
+        var buf = document.createDocumentFragment() 
         var pairs = Utils.fold(list, {}, function(word, mem)
         {
             mem[word] = UI.IDfromEID(id)
             id++            // slight side-effect
+
+            // Also append the LI into the UL.
+            var li = UI.renderEntry(word, UI.ClassFromEID(id))
+            buf.appendChild(li)
+
             return mem
         })
+        UI(['#autocomplete']).query().n(0).done()().appendChild(buf)
 
         return new Trie(pairs)
     }
@@ -25,6 +32,8 @@ window.Session =
     {
         document.addEventListener("DOMContentLoaded", function()
         {
+            Session.trie = Main.initUITrie(LIST)
+
             // Do setup and testing input.
             Main.setupInput()()
             Main.bindTypeEvents()
@@ -103,13 +112,13 @@ window.Session =
     }
 
 window.Main = {}
-Main.initTrie = initTrie
+Main.initUITrie = initUITrie
 Main.handleInputDone = handleInputDone
 Main.handleKeypress = handleKeypress
 Main.getMatchIDs = getMatchIDs
 Main.setupInput = setupInput
 Main.bindTypeEvents = bindTypeEvents
-Session.trie = Main.initTrie(LIST)
+
 init()
 
 })()

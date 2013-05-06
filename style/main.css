@@ -1,0 +1,10 @@
+
+#autocomplete li
+{
+    display: none;
+}
+
+#autocomplete li.activated
+{
+    display: normal;
+}

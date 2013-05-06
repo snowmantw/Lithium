@@ -14,7 +14,7 @@ window.UI = function(val)
 // Element ID from entry ID
 UI.IDfromEID = function(id)
 {
-    return "entry-"+id
+    return "#autocomplete li.entry-"+id
 }
 
 // entry ID from element Id
@@ -25,12 +25,24 @@ UI.EIDfromID = function(eid)
     return r
 }
 
-// An entry: [ li#<id>,  ]
-UI.renderEntry = function(name, id)
+UI.ClassFromEID = function(id)
+{
+    return "entry-"+id
+}
+
+UI.EIDFromClass = function(clz)
+{
+    var m = clz.match(/.*-(.*)/)
+    var r = m ? m[1] : m    // null ? ID : null
+    return r
+}
+
+// An entry: [ li.<clz>,  ]
+UI.renderEntry = function(word, clz)
 {
     var $li   = document.createElement('li')
-    $li.setAttribute('id', UI.IDfromEID(id))
-    $li.textContent = name
+    $li.classList.add(clz)
+    $li.textContent = word
 
     return $li
 }
