@@ -25,10 +25,24 @@ window.Event =
         return id
     }
 
+    // ID is optional.
+    // If it's omited, will unbind all callbacks under the event.
     ,unbind: function(ename, id)
     {
-        // Default value is "".
-        Event.trie.update(ename+String(id), "")
+        if( undefined == id )
+        {
+            var binds = Event.trie.query(ename)
+            for( var id in binds )
+            {
+                // Default value is "".
+                Event.trie.update(ename+String(id), "")
+            }
+        }       
+        else
+        {
+            // Default value is "".
+            Event.trie.update(ename+String(id), "")
+        }
     }
 
     ,trigger: function(e)
