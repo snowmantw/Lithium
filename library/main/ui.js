@@ -62,7 +62,7 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
     // Note: Check before use it.
     //
     // :: UI [selector] -> UI NodeList 
-    query: function()
+     query: function()
     {
         var _this = this
 
@@ -70,6 +70,106 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
         {
             _this.__pc++
             return _this.__process[_this.__pc](document.querySelectorAll.apply(document,slcs))
+        })
+        return this
+    }
+
+    // Choose #n nodes, if previous result is an array.
+    // :: UI [a] -> Number -> UI a
+    ,n: function(n)
+    {
+        var _this = this
+        _this.__process.push( function(xs)
+        {
+            _this.__pc++
+            return _this.__process[_this.__pc](xs[n])
+        })
+        return this
+    }
+
+    // Can get value if it exists.
+    //
+    // :: UI DOM -> UI String
+    ,val: function()
+    {
+        var _this = this
+
+        _this.__process.push( function(dom)
+        {
+            _this.__pc++
+            return _this.__process[_this.__pc](dom.value)
+        })
+        return this
+    }
+
+    // Gesetter.
+    //
+    // :: UI DOM -> AttributeName -> String -> UI DOM
+    // :: UI DOM -> AttributeName -> UI String | UI Undefined
+    ,attr: function(name, value)
+    {
+        var _this = this
+
+        var setter = function()
+        {
+        _this.__process.push( function(dom)
+        {
+            dom.setAttribute(name, value)
+            _this.__pc++
+            return _this.__process[_this.__pc](dom)
+        })}
+
+        var getter = function()
+        {
+        _this.__process.push( function(dom)
+        {
+            _this.__pc++
+            return _this.__process[_this.__pc](dom.getAttribute(name))
+        })}
+
+        if( undefined != value ){ setter() }
+        else{ getter() }
+
+        return this
+    }
+
+    // Append multiple DOMs to the DOM.
+    //
+    // :: UI DOM -> [DOM] -> UI DOM
+    ,appends: function(doms)
+    {
+        var _this = this
+        _this.__process.push( function(target)
+        {
+            var buf = document.createDocumentFragment()
+            Utils.each(doms, function(dom,i)
+            {
+                buf.appendChild(dom)
+            })
+
+            target.appendChild(buf)
+            _this.__pc++
+            return _this.__process[_this.__pc](target)
+        })
+        return this
+    }
+
+    // Forward native event to application events.
+    // Will treat native event object as the 'data' property in application event.
+    //
+    // :: UI DOM -> NativeName -> ( NativeEvent -> Event ) -> UI DOM
+    ,forward: function(nname, fn)
+    {
+        var _this = this
+        _this.__process.push( function($dom)
+        {
+            $dom.addEventListener(nname, function(e)
+            {
+                var newevent = fn(e)
+                Event.trigger(newevent)
+            })
+            _this.__pc++
+            return _this.__process[_this.__pc]($dom)    // Will do nothing but pass the $dom to next step.
         })
         return this
     }
