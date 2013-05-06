@@ -222,7 +222,8 @@ window.Tests.Trie =
 {
      testInitialize: function()
     {
-        var kvs = {'a': 'id-a', 'z': 'id-z', 'abcdefg': 'id-abcdefg', 'zab': 'id-zab', 'zac': 'id-zac'}
+        var kvs = {'a': 'id-a', 'z': 'id-z', 'abcdefg': 'id-abcdefg'
+                  , 'zab': 'id-zab', 'zac': 'id-zac'}
         var t = new Trie(kvs)
         var itr = 0
         for(var k in kvs)
