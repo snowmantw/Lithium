@@ -46,7 +46,7 @@ window.Utils =
             return xs.reduce(function(pre, e, i, a)
             {
                 return fn(e,pre)
-            })
+            }, mem)
         }
         else
         {
