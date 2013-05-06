@@ -11,10 +11,17 @@ window.UI = function(val)
 
 // Static & pure functions
 
-// Element ID from entry ID
+// Element ID ( selector for convenience ) from entry ID
 UI.IDfromEID = function(id)
 {
     return "#autocomplete li.entry-"+id
+}
+
+UI.EIDfromClass = function(clz)
+{
+    var m = clz.match(/.*-(.*)/)
+    var r = m ? m[1] : m    // null ? ID : null
+    return r
 }
 
 // entry ID from element Id
@@ -47,7 +54,7 @@ UI.renderEntry = function(word, clz)
     return $li
 }
 
-// <id>, [{name: String, id: String}]
+// <id>, [{name: String, id: String}]; 
 UI.renderList = function(id, es)
 {
     var $ul = document.createElement('ul')
@@ -56,7 +63,7 @@ UI.renderList = function(id, es)
     var buf = document.createDocumentFragment()
     var es = Utils.map(es, function(e,i)
     {
-        buf.appendChild(UI.renderEntry(e['name'], e['id']))
+        buf.appendChild(UI.renderEntry(e['name'], e['id'] ))
     })
 
     $ul.appendChild(buf)
@@ -81,7 +88,15 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
         _this.__process.push( function(slcs)
         {
             _this.__pc++
-            return _this.__process[_this.__pc](document.querySelectorAll.apply(document,slcs))
+            if( 0 != slcs.length )
+            {
+                var doms = document.querySelectorAll.apply(document,slcs)
+            }
+            else
+            {
+                var doms = []
+            }
+            return _this.__process[_this.__pc](doms)
         })
         return this
     }
@@ -110,6 +125,44 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
         {
             _this.__pc++
             return _this.__process[_this.__pc](dom.value)
+        })
+        return this
+    }
+
+    // :: UI DOM -> ClassName -> UI DOM
+    ,addClass: function(clz)
+    {
+        var _this = this
+
+        _this.__process.push( function(doms)
+        {
+            // HTML5 classList API, which is standard and be implemented by major browsers.
+            Utils.each(doms, function(dom)
+            {
+                dom.classList.add(clz)
+            })
+
+            _this.__pc++
+            return _this.__process[_this.__pc](doms)
+        })
+        return this
+    }
+
+    // :: UI [DOM] -> ClassName -> UI [DOM]
+    ,removeClass: function(clz)
+    {
+        var _this = this
+
+        _this.__process.push( function(doms)
+        {
+            // HTML5 classList API, which is standard and be implemented by major browsers.
+            Utils.each(doms, function(dom)
+            {
+                dom.classList.remove(clz)
+            })
+
+            _this.__pc++
+            return _this.__process[_this.__pc](doms)
         })
         return this
     }

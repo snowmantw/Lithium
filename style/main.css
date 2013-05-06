@@ -6,5 +6,5 @@
 
 #autocomplete li.activated
 {
-    display: normal;
+    display: inline;
 }

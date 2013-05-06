@@ -15,17 +15,28 @@ window.Session =
         var pairs = Utils.fold(list, {}, function(word, mem)
         {
             mem[word] = UI.IDfromEID(id)
-            id++            // slight side-effect
 
             // Also append the LI into the UL.
             var li = UI.renderEntry(word, UI.ClassFromEID(id))
             buf.appendChild(li)
 
+            id++            // slight side-effect
             return mem
         })
         UI(['#autocomplete']).query().n(0).done()().appendChild(buf)
 
         return new Trie(pairs)
+    }
+
+    var initUIList = function(list)
+    {
+        return UI(ul)
+            ._(function(ul)
+            {
+                var wrapper = document.getElementById('autocomplete-wrapper')
+                wrapper.appendChild(ul)
+            })
+            .done()
     }
 
     var init = function()
@@ -109,6 +120,14 @@ window.Session =
     {
         var str = e['data']
         var ids = getMatchIDs(str)
+        
+        // Remove all activated classes.
+        UI(['#autocomplete li.activated']).query()
+            .removeClass('activated').done()()
+
+        // Then add them on matched LIs.
+        UI(ids).query()
+            .addClass('activated').done()()
     }
 
 window.Main = {}
@@ -118,7 +137,6 @@ Main.handleKeypress = handleKeypress
 Main.getMatchIDs = getMatchIDs
 Main.setupInput = setupInput
 Main.bindTypeEvents = bindTypeEvents
-
 init()
 
 })()
