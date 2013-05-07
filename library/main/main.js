@@ -24,6 +24,12 @@ window.Session =
             var li = UI.renderEntry(word, UI.ClassFromEID(id))
             buf.appendChild(li)
 
+            // If user click on the entry, put in it in the input element.
+            UI(li).forward('click',function(ne)
+            {
+                return {'name': 'user-select-entry', 'data': {'text': li.textContent}}
+            }).done()()
+
             id++            // slight side-effect
             return mem
         })
@@ -53,7 +59,13 @@ window.Session =
             // Do setup and testing input.
             Main.setupInput()()
             Main.bindTypeEvents()
+            Main.bindClickEvents()
         })
+    }
+
+    var bindClickEvents = function()
+    {
+        Event.bind('user-select-entry', handleSelectEntry)
     }
 
     var setupInput = function()
@@ -99,6 +111,13 @@ window.Session =
             var text = UI(['#user-input']).query().n(0).val().done()() 
             return {'name':"user-input-done", 'data': text}
         })
+    }
+
+    var handleSelectEntry = function(e)
+    {
+        var text = e.data.text
+        UI('#user-input').query().n(0).val(e.data.text).done()()
+        Event.trigger({'name':"user-input-done", 'data': text})
     }
 
     // Match string to autocomplete IDs. Exactly matching will output exactly one element in an array,
@@ -206,9 +225,11 @@ Main.handleKeypress = handleKeypress
 Main.getMatchIDs = getMatchIDs
 Main.setupInput = setupInput
 Main.bindTypeEvents = bindTypeEvents
+Main.bindClickEvents = bindClickEvents
 Main.lockSubmit = lockSubmit
 Main.unlockSubmit = unlockSubmit
 Main.getList = getList
+
 init()
 
 })()
