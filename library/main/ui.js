@@ -90,7 +90,7 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
             _this.__pc++
             if( 0 != slcs.length )
             {
-                var doms = document.querySelectorAll.apply(document,slcs)
+                var doms = document.querySelectorAll(slcs)
             }
             else
             {
