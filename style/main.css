@@ -1,4 +1,10 @@
 
+/* Show all LI before first char typed.*/
+#autocomplete.uninit li
+{
+    display: block;
+}
+
 #autocomplete li
 {
     display: none;
