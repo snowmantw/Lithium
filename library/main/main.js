@@ -53,9 +53,10 @@ window.Session =
 
     var setupInput = function()
     {
+        // Can't use keypress because it doesn't detect backspace key.
         return UI(['#user-input'])
             .query().n(0)
-            .forward('keypress', function(e)
+            .forward('keyup', function(e)
             {
                 return {'name': 'user-keypress', 'data': e}
             })
