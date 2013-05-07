@@ -129,6 +129,21 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
         return this
     }
 
+    // Can get text content if it exists.
+    //
+    // :: UI DOM -> UI String
+    ,text: function()
+    {
+        var _this = this
+
+        _this.__process.push( function(dom)
+        {
+            _this.__pc++
+            return _this.__process[_this.__pc](dom.textContent)
+        })
+        return this
+    }
+
     // :: UI DOM -> ClassName -> UI DOM
     ,addClass: function(clz)
     {
