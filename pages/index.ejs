@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>Lithium</title>
+    <link rel="stylesheet" href="style/main.css" type="text/css" />
+    <script src="media/list.js" type="text/javascript"></script>
+    <script src="media/cname.js" type="text/javascript"></script>
+    <script src="library/main/trie.js" type="text/javascript"></script>
+    <script src="library/main/utils.js" type="text/javascript"></script>
+    <script src="library/main/event.js" type="text/javascript"></script>
+    <script src="library/main/context.js" type="text/javascript"></script>
+    <script src="library/main/timer.js" type="text/javascript"></script>
+    <script src="library/main/ui.js" type="text/javascript"></script>
+    <script src="library/main/main.js" type="text/javascript"></script>
+    <script src="library/main/tests.js" type="text/javascript"></script>
+</head>
+<body>
+    <div id="switch-cname">← 中文姓名</div>    
+    <div id="switch-words">Words →</div>    
+
+    <div id="workspace">
+        <form id="input-area">
+            <img id="loading" src="media/loader.gif" />
+            <input id="user-input" name="user-input" type="text" autocomplete="off" placeholder="Type words here..." />
+            <input id="submit" type="submit" value="Submit" />
+        </form>
+        <ul id="autocomplete" class="uninit"></ul>
+    </div>
+
+</body>
+</html>
