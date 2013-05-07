@@ -265,6 +265,10 @@ window.Session =
 
         // Because Trie only store ID, not DOM, so no memory leaks.
         Session.trie = null
+
+        // Restore the state of UL.
+        // Fist character toggle the class, to hide inactivated entries.
+        UI('#autocomplete').query().addClass('uninit').done()()
     }
 
 window.Main = {}
