@@ -80,7 +80,7 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
     // Use new `querySelectorAll` API if it is implemented.
     // Note: Check before use it.
     //
-    // :: UI [selector] -> UI NodeList 
+    // :: UI [selector]| UI selector -> UI NodeList 
      query: function()
     {
         var _this = this
@@ -88,6 +88,14 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
         _this.__process.push( function(slcs)
         {
             _this.__pc++
+
+            // We assume that will pass single string in, which is acceptable.
+            // Other cases will throw error.
+            if( "string" == typeof(slcs) )
+            {
+                slcs = [slcs]
+            }
+
             if( 0 != slcs.length )
             {
                 var doms = document.querySelectorAll(slcs)
