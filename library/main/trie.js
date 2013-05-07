@@ -91,7 +91,10 @@ Trie.prototype =
         return this.doValues([], this.__trie[""], filter)
     }
 
-    // :: [a] -> Tree -> (a -> Boolean) -> [a]
+    // If `filter` return true OR object, put the element in result.
+    // If it return false, despite it. 
+    // 
+    // :: [a] -> Tree -> (a -> Boolean | Object) -> [a]
     ,doValues: function(mem, tree, filter)
     {
         var _this = this
@@ -103,7 +106,9 @@ Trie.prototype =
             var v = tree[k]
             if( "" == k )
             { 
-                if( filter(v) ){ mem.push(v) }
+                var fv = filter(v)
+                if( true === fv ){ mem.push(v) }
+                else if( false != fv ){ mem.push(fv) }
             }
             else
             {
