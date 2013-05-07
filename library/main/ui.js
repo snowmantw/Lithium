@@ -122,33 +122,65 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
         return this
     }
 
+    // Gesetter.
     // Can get value if it exists.
     //
+    // :: UI DOM -> String -> UI DOM
     // :: UI DOM -> UI String
-    ,val: function()
+    ,val: function(value)
     {
         var _this = this
 
+        var setter = function()
+        {
+        _this.__process.push( function(dom)
+        {
+            dom.value = value
+            _this.__pc++
+            return _this.__process[_this.__pc](dom)
+        })}
+
+        var getter = function()
+        {
         _this.__process.push( function(dom)
         {
             _this.__pc++
             return _this.__process[_this.__pc](dom.value)
-        })
+        })}
+        if( undefined != value ){ setter() }
+        else{ getter() }
+
         return this
     }
 
+    // Gesetter.
     // Can get text content if it exists.
     //
+    // :: UI DOM -> String -> UI DOM
     // :: UI DOM -> UI String
-    ,text: function()
+    ,text: function(text)
     {
         var _this = this
 
+        var setter = function()
+        {
+        _this.__process.push( function(dom)
+        {
+            dom.textContent = text
+            _this.__pc++
+            return _this.__process[_this.__pc](dom)
+        })}
+        if( undefined != text ){ setter() }
+        else{ getter() }
+
+        var getter = function()
+        {
         _this.__process.push( function(dom)
         {
             _this.__pc++
             return _this.__process[_this.__pc](dom.textContent)
-        })
+        })}
+
         return this
     }
 
