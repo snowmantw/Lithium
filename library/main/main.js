@@ -107,10 +107,12 @@ window.Session =
         }
         Timer.after(Session['delay_lookup'], "delay_lookup", function(ts, timers)
         {
-            //Update autocomplete.
+            // Update autocomplete.
             var text = UI(['#user-input']).query().n(0).val().done()() 
             return {'name':"user-input-done", 'data': text}
         })
+        // Show the loading GIF.
+        UI('#loading').query().addClass('activated').done()()
     }
 
     var handleSelectEntry = function(e)
@@ -198,6 +200,8 @@ window.Session =
             }
             UI(id).query().addClass('activated').done()()
         })
+        // Hide the loading GIF.
+        UI('#loading').query().removeClass('activated').done()()
     }
 
     var handleInputMatch = function(e)
