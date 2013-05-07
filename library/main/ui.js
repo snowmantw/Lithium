@@ -191,6 +191,36 @@ UI.o.prototype = Utils.copy(Context.o.prototype,
     }
 
     // Gesetter.
+    // :: UI DOM -> PropertyName -> String -> UI DOM
+    // :: UI DOM -> PropertyName -> UI String | UI Undefined
+    ,property: function(name, value)
+    {
+        var _this = this
+
+        var setter = function()
+        {
+        _this.__process.push( function(dom)
+        {
+            dom[name] = value
+            _this.__pc++
+            return _this.__process[_this.__pc](dom)
+        })}
+
+        var getter = function()
+        {
+        _this.__process.push( function(dom)
+        {
+            _this.__pc++
+            return _this.__process[_this.__pc](dom[name])
+        })}
+
+        if( undefined != value ){ setter() }
+        else{ getter() }
+
+        return this
+    }
+
+    // Gesetter.
     //
     // :: UI DOM -> AttributeName -> String -> UI DOM
     // :: UI DOM -> AttributeName -> UI String | UI Undefined
