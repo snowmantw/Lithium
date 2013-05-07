@@ -4,7 +4,7 @@
 window.Session = 
 {
     // delay MS before perform a lookup.
-    'delay_lookup': 400,
+    'delay_lookup': 200,
 }
     var getList = function()
     {
@@ -160,8 +160,11 @@ window.Session =
         var mids = getMatchIDs(str)
         
         // Remove all activated classes.
-        UI(['#autocomplete li.activated']).query()
+        UI('#autocomplete li.activated').query()
             .removeClass('activated').done()()
+
+        UI('#autocomplete li.matched').query()
+            .removeClass('matched').done()()
 
         // Then add them to matched LIs.
         Utils.each(mids, function(mid)
@@ -172,6 +175,7 @@ window.Session =
             if( exactly )
             {
                 Event.trigger({'name':'user-input-match', 'data': {'success':true} })
+                UI(id).query().addClass('matched').done()()
             }
             UI(id).query().addClass('activated').done()()
         })
