@@ -269,6 +269,9 @@ window.Session =
         // Restore the state of UL.
         // Fist character toggle the class, to hide inactivated entries.
         UI('#autocomplete').query().addClass('uninit').done()()
+
+        // Clear the input.
+        UI('#user-input').query().n(0).val("").done()()
     }
 
 window.Main = {}
