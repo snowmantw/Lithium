@@ -91,3 +91,19 @@ body
 {
     visibility: visible
 }
+
+#switch-words
+{
+    color: rgb(236,236,236);
+    cursor: pointer;
+    font-size: 18pt;
+    float: right;
+}
+
+#switch-cname
+{
+    color: rgb(236,236,236);
+    cursor: pointer;
+    font-size: 18pt;
+    float: left;
+}

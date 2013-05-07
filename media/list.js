@@ -1,5 +1,5 @@
 
-LIST = [
+ELIST = [
 "a",
 "ab",
 "abilities",

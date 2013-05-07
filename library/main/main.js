@@ -8,7 +8,8 @@ window.Session =
 }
     var getList = function()
     {
-        return LIST
+        // Default is English words.
+        return ELIST
     }
 
     // :: [String] -> Trie
@@ -49,18 +50,31 @@ window.Session =
             .done()
     }
 
-    var init = function()
+    // Idempotent init function.
+    var reinit = function()
     {
-        document.addEventListener("DOMContentLoaded", function()
-        {
-            Main.lockSubmit()
-            Session.trie = Main.initUITrie(Main.getList())
+        Main.lockSubmit()
+        Session.trie = Main.initUITrie(Main.getList())
 
-            // Do setup and testing input.
-            Main.setupInput()()
-            Main.bindTypeEvents()
-            Main.bindClickEvents()
-        })
+        // Do setup and testing input.
+        Main.bindTypeEvents()
+        Main.bindClickEvents()
+    }
+
+    var setupSwitcher = function()
+    {
+        UI('#switch-cname').query().n(0).forward('click',function()
+        {
+            return {'name': 'switch-cname'}
+        }).done()()
+
+        UI('#switch-words').query().n(0).forward('click',function()
+        {
+            return {'name': 'switch-words'}
+        }).done()()
+
+        Event.bind('switch-cname', function(){ Main.switchCList() })
+        Event.bind('switch-words', function(){ Main.switchEList() })
     }
 
     var bindClickEvents = function()
@@ -77,7 +91,7 @@ window.Session =
             {
                 return {'name': 'user-keypress', 'data': e}
             })
-            .done()
+            .done()()
     }
 
     var bindTypeEvents = function()
@@ -222,6 +236,37 @@ window.Session =
         UI('#submit').query().n(0).property('disabled',false).done()()
     }
 
+    var switchCList = function()
+    {
+        Main.getList = function(){ return CLIST }
+        Main.finalize()
+        Main.reinit()
+    }
+
+    var switchEList = function()
+    {
+        Main.getList = function(){ return ELIST }
+        Main.finalize()
+        Main.reinit()
+    }
+
+    var finalize = function()
+    {
+        // Clear input and lock submit.
+        Main.lockSubmit()
+        UI('#user-input').query().val('').done()()
+
+        // Clear all nodes in the list.
+        var ul = UI('#autocomplete').query().n(0).done()()
+        while (ul.hasChildNodes()) 
+        {
+            ul.removeChild(ul.lastChild)
+        }
+
+        // Because Trie only store ID, not DOM, so no memory leaks.
+        Session.trie = null
+    }
+
 window.Main = {}
 Main.initUITrie = initUITrie
 Main.handleInputDone = handleInputDone
@@ -233,7 +278,19 @@ Main.bindClickEvents = bindClickEvents
 Main.lockSubmit = lockSubmit
 Main.unlockSubmit = unlockSubmit
 Main.getList = getList
+Main.switchEList = switchEList
+Main.switchCList = switchCList
+Main.finalize = finalize
+Main.setupSwitcher = setupSwitcher
 
-init()
+Main.reinit = reinit
+
+document.addEventListener("DOMContentLoaded", function()
+{
+    Main.setupInput()
+    Main.setupSwitcher()
+    Main.reinit()
+
+})
 
 })()
