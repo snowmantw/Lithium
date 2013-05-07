@@ -4,8 +4,12 @@
 window.Session = 
 {
     // delay MS before perform a lookup.
-    'delay_lookup': 400 
+    'delay_lookup': 400,
 }
+    var getList = function()
+    {
+        return LIST
+    }
 
     // :: [String] -> Trie
     var initUITrie = function(list)
@@ -43,7 +47,8 @@ window.Session =
     {
         document.addEventListener("DOMContentLoaded", function()
         {
-            Session.trie = Main.initUITrie(LIST)
+            Main.lockSubmit()
+            Session.trie = Main.initUITrie(Main.getList())
 
             // Do setup and testing input.
             Main.setupInput()()
@@ -67,10 +72,17 @@ window.Session =
     {
         Event.bind('user-keypress', handleKeypress)
         Event.bind('user-input-done', handleInputDone)
+        Event.bind('user-input-match', handleInputMatch)
     }
 
     var handleKeypress = function(e)
     {
+        // Any change should lock the submit
+        Main.lockSubmit()
+
+        // Fist character toggle the class, to hide inactivated entries.
+        UI('#autocomplete.uninit').query().removeClass('uninit').done()()
+
         var ne  = e['data']
         var key = ne.keyCode || ne.which
         var c = String.fromCharCode(key)
@@ -94,9 +106,29 @@ window.Session =
     //
     // And of course, empty array means no possible or exact result.
     //
-    // :: String -> [ID]
+    // :: String -> [{'match': ID, 'exactly': Boolean}]
     var getMatchIDs = function(str)
     {
+        // All results.
+        // Because our trie started with an empty entry contains all entries.
+        // It's different from other entries inside the trie.
+        if( "" == str )
+        {
+            return Session.trie.values(function(v)
+            {
+                // Omit {"":""}
+                if( "" != v )
+                {
+                    return {'match': v, 'exactly': false}
+                }
+                else
+                {
+                    return false
+                }
+            })
+        }
+
+
         // {"": <id>} | {"": "", <subc>: {"": <sid>, ...}}
         var match = Session.trie.query(str)
 
@@ -107,11 +139,16 @@ window.Session =
             {   
             if("" != match[k])  // Omit {"":""}
             {                   
-                ids.push(match[k])
+                ids.push({'match': match[k], 'exactly': true})
             }}
             else
             {
-                ids = ids.concat(Session.trie.doValues([], match, function(v){ return v}))
+                ids = ids.concat(Session.trie.doValues([], match, 
+                    function(v)
+                    { 
+                        if( "" === v ){ return false }
+                        return {'match':v, 'exactly': false}
+                    }))
             }
         }
         return ids
@@ -120,15 +157,42 @@ window.Session =
     var handleInputDone = function(e)
     {
         var str = e['data']
-        var ids = getMatchIDs(str)
+        var mids = getMatchIDs(str)
         
         // Remove all activated classes.
         UI(['#autocomplete li.activated']).query()
             .removeClass('activated').done()()
 
-        // Then add them on matched LIs.
-        UI(ids).query()
-            .addClass('activated').done()()
+        // Then add them to matched LIs.
+        Utils.each(mids, function(mid)
+        {
+            var id = mid['match']
+            var exactly = mid['exactly']
+
+            if( exactly )
+            {
+                Event.trigger({'name':'user-input-match', 'data': {'success':true} })
+            }
+            UI(id).query().addClass('activated').done()()
+        })
+    }
+
+    var handleInputMatch = function(e)
+    {
+        if(true == e['data'].success)
+        {
+            Main.unlockSubmit()
+        }
+    }
+
+    var lockSubmit = function()
+    {
+        UI('#submit').query().n(0).property('disabled',true).done()()
+    }
+
+    var unlockSubmit = function()
+    {
+        UI('#submit').query().n(0).property('disabled',false).done()()
     }
 
 window.Main = {}
@@ -138,6 +202,9 @@ Main.handleKeypress = handleKeypress
 Main.getMatchIDs = getMatchIDs
 Main.setupInput = setupInput
 Main.bindTypeEvents = bindTypeEvents
+Main.lockSubmit = lockSubmit
+Main.unlockSubmit = unlockSubmit
+Main.getList = getList
 init()
 
 })()
